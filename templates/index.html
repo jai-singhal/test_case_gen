@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+    <title>Test Case Optimization Using Artificial Bee Colony Algorithm </title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header clearfix">
+            <nav>
+                <ul class="nav nav-pills float-right">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact</a>
+                    </li>
+                </ul>
+            </nav>
+            <h3 class="text-muted">TC Optimization</h3>
+        </div>
+        <div class="jumbotron">
+            <h1 class="display-5">Test Case Optimization Using Artificial Bee Colony Algorithm </h1>
+            <p >Artificial Bee Colony(ABC) Algorithm  approach to work with faster and efficient ways for generating optimised test
+                suite. In this project, optimised test suite is
+                generated for each independent path of the program where each path will have two
+                types of data. One is the test data which traverses the path with 100% coverage and
+                the other which traverses the path with 0% coverage</p>
+        </div>
+
+        <div class="container">
+            <form id="program_form">
+                <div class="form-group">
+                    <label for="exampleSelect1">Select program to run</label>
+                    <select class="custom-select" id="program_select" name = "choice">
+                        <option selected value="-1">Pick a program</option>
+                        <option value="1">Even odd program</option>
+                        <option value="2">Quadratic equation root</option>
+                        <option value="3">Finding remainder</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+            <div id = "render_results">
+
+            </div>
+        </div>
+
+    </div> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    <script>
+
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        function render_results(resp){
+            $("#render_results").html(
+                `<table class="table table-striped table-bordered table-responsive">
+                <thead>
+                    <tr>
+                    <th>#</th>
+                    <th>Path</th>
+                    <th>Fitness value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                </table>`
+            );
+            for(var i = 0; i < resp["path_fitness"].length; i++){
+                let path_str = "";
+                for(var j = 0; j < resp["path_fitness"][i]["path"].length; j++){
+                    path_str += resp["path_fitness"][i]["path"][j]["node"];
+                    path_str += " "
+                }
+
+                $("#render_results tbody").append(
+                    `<tr>
+                    <td>
+                        ${i+1}
+                    </td>
+                    <td>
+                        ${path_str}
+                    </td>
+                    <td>
+                        ${resp["path_fitness"][i]["fitness"]}
+                    </td>
+                    </tr>`
+                );
+            }
+
+        }
+        $("#program_form").submit(function (e) {
+            e.preventDefault();
+            var data = new FormData();
+            data.append("X-CSRFToken", getCookie('csrftoken'));
+            data.append("choice", $("#program_select").val());
+            $.ajax({
+                url: '/api/post/run',
+                data: data,
+                type: 'POST',
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (res) {
+                    render_results(res["response"]);
+                },
+                error: function (res) {
+                    console.log(res);
+                }
+            });
+        })
+    </script>
+</body>
+
+</html>
