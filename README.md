@@ -20,13 +20,7 @@ pip3 install flask
 
 ## 3. Run the program
 
-Go to "test-case-optimizer"  
-
-```shell
-cd test-case-optimizer
-```
-
-And run the `main.py`
+Run the `main.py`
 
 ```shell
 python main.py
@@ -42,6 +36,4 @@ python3 main.py
 
 Open the browser and go to `127.0.0.1:5000`, where you can see the index page
 
-![](../home_screenshot.png)
-
-​                                                                                    ----&&---
+![](home_screenshot.png)
